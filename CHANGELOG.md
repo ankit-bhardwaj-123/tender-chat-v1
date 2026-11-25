@@ -21,6 +21,13 @@
 
 ### Changed
 
+- 2026-11-25: Plan 01 step 3 (spec 01): `signupSchema` and `loginSchema` with `SignupInput`/`LoginInput` interfaces; email trimmed + lowercased, password ≥ 8, confirm must match, empty name/email/password refused (`src/contracts/auth.contracts.ts`)
+- 2026-11-25: CI can pass: Prettier added with `format`/`format:check` (code only; docs, lockfile, migrations and shadcn `ui/` ignored; `endOfLine: auto` for Windows), `test` runs `tests/unit` and new `test:integration` runs `tests/integration`; the integration job now writes this app's env keys (fresh JWT secrets, `REDIS_KEY_PREFIX=ci:`) instead of the reference project's file-store and Chrome steps; `@types/node` 20 → 24 to match Node 24 and vitest 5 (`package.json`, `.prettierrc.json`, `.prettierignore`, `.github/workflows/ci.yml`, `src/app/globals.css`, `src/frontend/lib/utils.ts`)
+
+- 2026-11-25: Plan 01 step 2 (spec 01): added `jose`, `bcryptjs`, `zod`, `@upstash/redis`, `@upstash/ratelimit`, and `vitest` (dev); scripts `typecheck`, `test`, `db:generate`, `db:migrate`; new `drizzle.config.ts` (migrations in `src/backend/database/migrations`) and `vitest.config.ts` (`@` alias, `tests/**/*.test.ts`); OAuth keys in `.env.example` (`package.json`, `pnpm-lock.yaml`)
+
+- 2026-11-25: Plan 01 step 1 (spec 01): starter code moved into `src/` with `git mv` (`app/` → `src/app/`, `components/ui/` → `src/frontend/ui/`, `lib/utils.ts` → `src/frontend/lib/utils.ts`, `db/schema.ts` → `src/backend/database/schema.ts`); `@/*` now points to `./src/*` and shadcn aliases point to `src/frontend/` (`tsconfig.json`, `components.json`)
+
 - 2026-11-25: Code-style rule: backend uses only a few classes (Database, repositories, services, controllers; one class per whole job, max 3 constructor deps) with stateless helpers as plain functions in `src/backend/lib/`; frontend is functions only (`apiRequest()`, `authApi`, `fieldErrors()`; only `ApiError` is a class). Plan 01 cut to 7 backend classes and 17 steps (`CLAUDE.md`, `.claude/plans/01-auth.md`, `backend-patterns`, `frontend-patterns`, `verification-loop` skills, `feature-checker` agent, `execute-plan`/`plan-create`/`spec-create` commands, `basic-structor.md`)
 
 - 2026-11-25: `CLAUDE.md` now describes Plan 01's `src/` layout (`@/*` → `./src/*`, `src/backend/<area>/` classes, `src/backend/container.ts`, `src/backend/errors/` + `ErrorResponder`, `src/contracts/` zod schemas, `src/frontend/`), `CurrentUser`, the refresh cookie path and function components; `verification-loop` scans cover the `src/` paths (`CLAUDE.md`, `.claude/skills/verification-loop/SKILL.md`)

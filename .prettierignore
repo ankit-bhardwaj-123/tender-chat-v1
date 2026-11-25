@@ -1,0 +1,12 @@
+# Docs are hand-written; Prettier checks code only.
+*.md
+
+# Generated or installed files
+node_modules/
+.next/
+pnpm-lock.yaml
+next-env.d.ts
+src/backend/database/migrations/
+
+# shadcn parts: added by the CLI, kept as shadcn writes them
+src/frontend/ui/

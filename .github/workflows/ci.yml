@@ -30,7 +30,7 @@ jobs:
       - run: pnpm test
 
   integration:
-    name: Integration tests (Neon + Upstash + Chrome)
+    name: Integration tests (Neon + Upstash)
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -48,12 +48,22 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
           UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+        # JWT secrets are made fresh on each run: CI tokens never need to outlive the job.
+        # REDIS_KEY_PREFIX=ci: keeps CI rate-limit keys apart from dev: and prod: in the shared Upstash database.
         run: |
           cat > .env.local <<ENV
           DATABASE_URL=$DATABASE_URL
           UPSTASH_REDIS_REST_URL=$UPSTASH_REDIS_REST_URL
           UPSTASH_REDIS_REST_TOKEN=$UPSTASH_REDIS_REST_TOKEN
-          NEXT_PUBLIC_FILE_STORE=local
+          REDIS_KEY_PREFIX=ci:
+          ACCESS_TOKEN_SECRET=$(openssl rand -base64 64 | tr -d '\n')
+          REFRESH_TOKEN_SECRET=$(openssl rand -base64 64 | tr -d '\n')
+          ACCESS_TOKEN_TTL_SECONDS=900
+          REFRESH_TOKEN_TTL_DAYS=30
+          GOOGLE_CLIENT_ID=ci-unused
+          GOOGLE_CLIENT_SECRET=ci-unused
+          GITHUB_CLIENT_ID=ci-unused
+          GITHUB_CLIENT_SECRET=ci-unused
+          APP_URL=http://localhost:3000
           ENV
-      - run: google-chrome --version
       - run: pnpm test:integration
