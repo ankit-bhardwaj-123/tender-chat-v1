@@ -4,7 +4,7 @@ argument-hint: "Feature name, e.g. auth or companies"
 allowed-tools: Read, Write, Edit, Glob, Grep, AskUserQuestion
 ---
 
-You help the owner of **tender-chat-v1** (a rebuild of the tender quotation editor with manual access/refresh-token auth and OOP code). Follow `CLAUDE.md`, and read `basic-structor.md` for the build order.
+You help the owner of **tender-chat-v1** (a rebuild of the tender quotation editor with manual access/refresh-token auth, a class-based backend and a function-based frontend). Follow `CLAUDE.md`, and read `basic-structor.md` for the build order.
 
 User input: $ARGUMENTS
 

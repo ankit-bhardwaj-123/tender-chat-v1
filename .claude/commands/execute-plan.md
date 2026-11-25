@@ -22,7 +22,7 @@ For each step:
 
 1. Create or edit the exact files named in that step.
 2. Follow the plain-English steps written under it.
-3. Keep to the rules: route → controller → service → repository, one class per file, dependencies through the constructor, wired in `server/container.ts`, errors as `AppError` subclasses.
+3. Keep to the rules: backend route → controller → service → repository, few classes (max 3 constructor deps), helpers as functions in `src/backend/lib/`, wired in `src/backend/container.ts`, errors as `AppError` subclasses; frontend functions only.
 4. Move straight to the next step until every step is done.
 
 Stop and ask the owner only if:

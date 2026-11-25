@@ -1,6 +1,6 @@
 # tender-chat-v1: basic structure and build order
 
-Goal: rebuild `../tender-chat` myself, with a **manual auth system (access + refresh tokens)** and **OOP (class-based) code**.
+Goal: rebuild `../tender-chat` myself, with a **manual auth system (access + refresh tokens)** a **class-based backend** (few classes, max 3 constructor deps, helpers as functions) and a **function-based frontend**. Where this file and `CLAUDE.md` disagree, `CLAUDE.md` and the plans win.
 
 Current state (2026-11-25): Next 16.4, Drizzle, `pg`. `db/schema.ts` is empty.
 
@@ -17,7 +17,7 @@ Infrastructure (no Docker; local and production use the same services, so the co
    - `cookies()` is **async**.
 
    Read `node_modules/next/dist/docs/01-app/02-guides/authentication.md` and `node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/proxy.md`.
-2. **Folder layout, OOP style** (at the project root, no `src/`, because `@/*` points to `./*`):
+2. **Folder layout, class-based backend** (at the project root, no `src/`, because `@/*` points to `./*`):
    ```
    server/        db.ts, env.ts, errors.ts (AppError, NotFoundError...), http.ts, container.ts
    repositories/  UserRepository, RefreshTokenRepository, TenderRepository...
@@ -62,7 +62,7 @@ Infrastructure (no Docker; local and production use the same services, so the co
 ## Phase 3: Auth routes and pages
 
 11. Add `app/api/auth/{register,login,refresh,logout}/route.ts`. Validate every body with zod, and return the same "invalid email or password" message whether the email or the password was wrong.
-12. **Rate-limit login and register** with a `RateLimiter` class over `@upstash/ratelimit`, keyed by IP and email, with the `REDIS_KEY_PREFIX` prefix. An in-memory map doesn't work on Vercel, because each function instance has its own memory.
+12. **Rate-limit login and register** with a `createLimiter()` function over `@upstash/ratelimit`, keyed by IP and email, with the `REDIS_KEY_PREFIX` prefix. An in-memory map doesn't work on Vercel, because each function instance has its own memory.
 13. Build the `(auth)/login` and `(auth)/register` pages with forms that post to those routes.
 
 ## Phase 4: Protecting things
@@ -72,7 +72,7 @@ Infrastructure (no Docker; local and production use the same services, so the co
     - If it's expired and a refresh cookie exists, redirect to `/api/auth/refresh?next=<url>`. That route rotates the tokens and redirects back.
     - Otherwise, redirect to `/login`.
 15. **Session check in the data layer:** a `getCurrentUser()` helper, wrapped in `cache()`, that reads the access cookie, verifies it, and loads the user. **Every** service method that touches data calls it. Proxy alone is not security (the Next docs say this explicitly).
-16. **Client fetch wrapper:** an `ApiClient` class. On a 401 it calls `/api/auth/refresh` once, then retries the original request. Use a shared promise so 5 parallel requests don't trigger 5 refreshes.
+16. **Client fetch wrapper:** an `apiRequest()` function (frontend has no classes). On a 401 it calls `/api/auth/refresh` once, then retries the original request. Use a shared promise so 5 parallel requests don't trigger 5 refreshes.
 
 **Checkpoint:** before moving on, write tests for login, refresh, reusing an old refresh token (which must kill the family), logout and an expired access token.
 

@@ -29,7 +29,7 @@ Call `EnterPlanMode`. Read only what this feature touches:
 
 - `CLAUDE.md`, `basic-structor.md` and earlier plans in `.claude/plans/`
 - the code in this project (root folders: `app/`, `server/`, `controllers/`, `services/`, `repositories/`, `shared/`, `lib/`, `db/`)
-- the same feature in `../tender-chat/` for behaviour (read only): its plan in `../tender-chat/.claude/plans/` and its code in `../tender-chat/src/`. That code is function-based; turn it into classes here, don't copy its style.
+- the same feature in `../tender-chat/` for behaviour (read only): its plan in `../tender-chat/.claude/plans/` and its code in `../tender-chat/src/`. Its frontend functions fit here; turn its backend services and repositories into a few classes.
 - `node_modules/next/dist/docs/` for any Next.js 16 API you're unsure of, and the installed Drizzle RC's docs for queries and migrations
 
 If something in the spec can't be built as written, don't change it quietly: put it under "Spec problems".
@@ -89,7 +89,8 @@ What could go wrong, and questions still open.
 
 Keep to the owner's rules (`CLAUDE.md`):
 
-- route → controller → service → repository, one class per file, dependencies through the constructor, wired in `server/container.ts`
+- backend: route → controller → service → repository, few classes (one per whole job, max 3 constructor deps), helpers as plain functions in `src/backend/lib/`, wired in `src/backend/container.ts`
+- frontend: functions only (no classes except `ApiError`)
 - errors are `AppError` subclasses, mapped to HTTP in one place
 - plain written-out `interface` types
 - `route.ts` exports only HTTP handlers, and zod bodies go in `shared/`
